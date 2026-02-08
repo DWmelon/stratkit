@@ -1,0 +1,3 @@
+THS_iFinDLogin(username, password) // username: wangsheng005, password: N38e5nyr
+#指数权重,输入参数:日期(date)、指数名称(index_name)-iFinD数据接口
+THS_DR('p03563','date=20260201;index_name=000688USD08.SH','p03563_f001:Y,p03563_f002:Y,p03563_f003:Y,p03563_f004:Y','format:json')
