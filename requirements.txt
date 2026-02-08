@@ -1,0 +1,3 @@
+# 同花顺 iFinD 接口为本地 THSDataInterface_Windows，无需从 PyPI 安装
+# 若接口返回 data 为 DataFrame，可安装 pandas 以更好展示
+pandas>=1.0.0

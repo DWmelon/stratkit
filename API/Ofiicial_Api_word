@@ -1,0 +1,780 @@
+登录/登出函数
+登录函数：THS_iFinDLogin 
+python
+THS_iFinDLogin(username, password)
+在开始操作前，需要使用该命令登录。
+
+参数：
+
+参数	参数名称	参数类型	参数描述
+username	账号 ID	字符串	数据接口的账号 ID
+password	密码	字符串	数据接口账号 ID 所对应的密码
+输出：
+
+字段	字段名称	字段描述
+errorcode	错误码	1.返回 0，表示登录成功； 2.返回-201，表示重复登录； 3.返回-2，表示用户名或者密码错误。
+示例：
+
+python
+THS_iFinDLogin('user888','888888')
+该示例代表用户 user888 使用密码 888888 进行登录
+
+注：
+
+1. 命令的超时时间为 90 秒。
+
+2. 当不同电脑在同一时间登陆同一个账号时，会产生互斥的情况。
+
+登出函数：THS_iFinDLogout 
+python
+THS_iFinDLogout()
+用户可以使用该函数登出已经登录的账号。
+
+输出：
+
+字段	字段名称	字段描述
+errorcode	错误码	1.返回 0，表示登出成功。
+示例：
+
+python
+THS_iFinDLogout()
+该示例表示用户正在进行登出操作。
+
+数据函数
+基础数据：THS_BD 
+python
+THS_BD(thsCode, indicatorName, paramOption)
+该函数用于获取对应证券品种的基本资料、财务报表、盈利预测、并购重组等指标数据，支持多代码多指标输入。
+
+注：1 条数据为 1 个 EXCEL 单元格
+
+参数：
+
+参数	参数名称	参数类型	参数描述
+thsCode	代码	字符串	半角逗号连接的同花顺代码，支持多代码，如： '600004.SH,300330.SZ'
+indicatorName	指标	字符串	分号连接的指标名，支持多指标，指标名可以通过 SuperCommand 客户端->工具->指标函数查询，或通过 SuperCommand 客户端直接生成命令
+paramOption	参数	字符串	分号连接的指标参数，每个指标的不同参数用半角逗号连接。对应 indicatorName 中的指标，对应的指标无参数则为空， 如 ： '2019-12-09,100,2019-12-09;;2019-12-09,100,2019-12-09'
+输出：
+
+字段	字段名称	字段描述
+errorcode	错误 ID	代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+errmsg	错误信息	若 errorcode 返回非 0，此处会返回具体的错误信息
+indicators	指标信息	返回所有的指标信息
+datatype	指标格式	返回获取数据的指标格式
+perf	处理时间	返回请求命令整体耗时（ms）
+dataVol	数据量	返回当前命令消耗的数据量
+time	时间	返回数据取值的时间列表
+thscode	标的信息	返回所有标的代码
+data	结构体	返回内容包括 dataframe、json、list、table、array等特定格式的数据内容
+示例：
+
+
+python
+
+matlab
+
+r
+
+vba
+
+csharp
+
+c++
+
+java
+
+http
+python
+THS_BD('300033.SZ,600030.SH','ths_open_price_stock;ths_stock_short_name_stock;ths_close_price_stock','2025-01-13,100,2025-01-13;;2025-01-13,100,2025-01-13')
+该示例返回同花顺和中信证券在 2025-01-13 的开盘价、证券名称和收盘价。
+
+日期序列：THS_DS 
+python
+THS_DS(thscode, jsonIndicator, jsonparam, globalparam, begintime, endtime)
+获取选定各证券品种的历史序列数据，包括日间的行情数据、基本面数据以及各种技术指标数据。
+
+参数：
+
+参数	参数名称	参数类型	参数描述
+thscode	代码	字符串	半角逗号连接的同花顺代码，支持多代码，如： '600004.SH,300330.SZ'
+jsonIndicator	指标	字符串	分号连接的指标名，支持多指标，指标名可以通过 SuperCommand 客户端->工具->指标函数查询，或通过 SuperCommand 客户端直接生成命令
+jsonparam	参数	字符串	分号连接的指标参数，每个指标的不同参数用半角逗号连接。对应 jsonIndicator 中的指标，对应的指标无参数则为空，如：'100;;100'
+globalparam	日期序列 输出设置	字符串	半角逗号连接的日期序列输出的设置，单项设置用冒号分隔赋值。可以设置日期序列输出的时间周期、日期类型、非交易间隔处理等情况的处理。例如 'Interval:W,Fill:Previous,Days:WorkDays’。 各项设置的参数见日期序列输出设置表。
+begintime	开始日期	字符串	时间格式为 YYYY-MM-DD，例如‘2025-01-13’
+endtime	截止日期	字符串	时间格式为 YYYY-MM-DD，例如‘20125-01-13’
+日期序列输出设置（globalparam）：
+
+字段	字段名称	字段描述
+Interval	时间周期	D-日 W-周 M-月 Q-季 S-半年 Y-年
+Days	日期类型	Tradedays-交易日 Alldays-日历日
+Fill	非交易间隔处理	Previous-沿用之前数据 Blank-空值 具体数值-自定义数值
+输出：
+
+字段	字段名称	字段描述
+errorcode	错误 ID	代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+errmsg	错误信息	若 errorcode 返回非 0，此处会返回具体的错误信息
+indicators	指标信息	返回所有的指标信息
+datatype	指标格式	返回获取数据的指标格式
+perf	处理时间	返回请求命令整体耗时（ms）
+dataVol	数据量	返回当前命令消耗的数据量
+time	时间	返回数据取值的时间列表
+thscode	标的信息	返回所有标的代码
+data	结构体	返回内容包括 dataframe、json、list、table、array等特定格式的数据内容
+示例：
+
+
+python
+
+matlab
+
+r
+
+vba
+
+csharp
+
+c++
+
+java
+
+http
+python
+THS_DS('AAPL.O','ths_pre_close_uss','100','Days:Alldays,Fill:-1','2025-01-01','2025-01-13')
+该示例代表取苹果在 2025-01-01 到 2025-01-13 期间所有前收盘价数据。
+
+历史行情：THS_HQ 
+python
+THS_HQ(thscode, jsonIndicator, jsonparam, begintime, endtime)
+获取各证券品种的历史行情数据，包括日间的行情数据、基本面数据以及技术指标数据。针对债券、基金和期货还有一些专用指标数据。时间周期用户可以自己选定，目前可选的时间周期有日、周、月、年。其他的可选参数如复权方式、报价类型( 债券)、货币等用户可以根据自己的需要自己选择。
+
+参数：
+
+参数	参数名称	参数类型	参数描述
+thscode	代码	字符串	半角逗号连接的同花顺代码，支持多代码，如： '600004.SH,300330.SZ'
+jsonIndicator	指标	字符串	分号连接的指标名，支持多指标，指标名可以通过 SuperCommand 客户端直接生成命令
+jsonparam	历史行情输出设置	字符串	半角逗号连接的日期序列输出的设置，单项设置用冒号分隔赋值。可以设置历史行情输出的时间周期、复权方式、非交易间隔处理等情况的处理。例如 'Interval:W,Fill:Previous,Days:WorkDays’。 各项设置的参数见历史行情输出设置表
+begintime	开始日期	字符串	时间格式为 YYYY-MM-DD，例如‘2016-05-23’
+endtime	截止日期	字符串	时间格式为 YYYY-MM-DD，例如‘2016-05-23’
+历史行情输出设置（jsonparam）：
+
+字段	字段名称	字段描述	缺省值
+Interval	时间周期	D-日 W-周 M-月 Q-季 Y-年 同抽样周期二选一，返回周期汇总统计值	D
+SampleInterval	抽样周期	D-日 W-周 M-月 Q-季 S-半年 Y-年 同时间周期二选一，返回周期最后一个交易日日频数据	D
+fill	非交易间隔处理	Previous-沿用之前数据 Blank-空值 具体数值-自定义数值 Omit-缺省值	Previous
+CPS	复权方式	1-不复权 2-前复权（分红再投） 3-后复权（分红再投） 4-全流通前复权（分红再投） 5-全流通后复权（分红再投） 6-前复权（现金分红） 7-后复权（现金分红）	1
+baseDate	复权基点	基于复权基点向前或向后复权	1900-01-01 以上市首日为基点向后复权或以最新日期为基点向前复权
+PriceType	债券报价类型	1-全价 2-净价 仅债券生效	1
+Currency	货币类型	MHB-美元 GHB-港元 RMB-人民币 YSHB-原始货币	YSHB
+输出：
+
+字段	字段名称	字段描述
+errorcode	错误 ID	代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+errmsg	错误信息	若 errorcode 返回非 0，此处会返回具体的错误信息
+indicators	指标信息	返回所有的指标信息
+datatype	指标格式	返回获取数据的指标格式
+perf	处理时间	返回请求命令整体耗时（ms）
+dataVol	数据量	返回当前命令消耗的数据量
+time	时间	返回数据取值的时间列表
+thscode	标的信息	返回所有标的代码
+data	结构体	返回内容包括 dataframe、json、list、table、array等特定格式的数据内容
+示例：
+
+
+python
+
+matlab
+
+r
+
+vba
+
+csharp
+
+c++
+
+java
+
+http
+python
+THS_HQ('300033.SZ','open,high,low,close','Currency:MHB,fill:Omit','2024-01-13','2025-01-13')
+该示例代表取同花顺在 2024-01-13 到 2025-01-13 期间的历史数据的高开低收，如果某个交易日没有交易则不返回该日期。
+
+高频序列：THS_HF 
+python
+THS_HF(thscode, jsonIndicator, jsonparam, begintime, endtime)
+该命令用来获取证券的分钟历史 K 线行情、技术指标等数据。分钟线的周期可以自己选定，目前可选的周期有 1 分钟、3 分钟、5 分钟、10分钟、15 分钟、30 分钟和 60 分钟。
+
+参数：
+
+参数	参数名称	参数类型	参数描述
+thscode	代码	字符串	半角逗号连接的同花顺代码，支持多代码，如：'600004.SH,300330.SZ'
+jsonIndicator	指标	字符串	分号连接的指标名，支持多指标，指标名可以通过 SuperCommand 客户端直接生成命令
+jsonparam	高频序列输出设置	字符串	半角逗号连接的日期序列输出的设置，单项设置用冒号分隔赋值。可以设置日期序列输出的时间周期、日期类型、非交易间隔处理等情况的处理。例如 'Interval:W,Fill:Previous,Days:WorkDays’。各项设置的参数见高频序列输出设置
+begintime	开始时间	字符串	开始时间，时间格式为 YYYY-MM-DD HH:MM:SS，例如 2019-12-10 09:30:00
+endtime	截止时间	字符串	截止时间，时间格式为 YYYY-MM-DD HH:MM:SS，例如 2019-12-10 10:30:00
+高频序列输出设置（jsonparam）：
+
+字段	字段名称	字段描述	缺省值
+startTime	每日数据开始时间	startTime 和 endTime 限定每个交易日数据的开始时间和截止时间	
+endTime	每日数据截止时间	startTime 和 endTime 限定每个交易日数据的开始时间和截止时间	
+timeformat	时间戳格式	空字符串-北京时间 LocalTime-当地时间	
+Interval	时间周期	1-1 分钟 3-3 分钟 5-5 分钟 10-10 分钟 15-15 分钟 30-30 分钟 60-60 分钟	1
+Fill	非交易间隔处理	Original-不处理 Previous-沿用之前数据 Blank-空值 具体数值-自定义数值	Previous
+CPS	复权方式	1、股票：no-不复权 forward1-前复权(分红方案计算) backward1-后复权(分红方案计算) forward3-前复权(交易所价格计算) backward3-后复权(交易所价格计算) forward2-全流通前复权(分红方案计算) backward2-全流通后复权(分红方案计算) forward4-全流通前复权(交易所价格计算) backward4-全流通后复权(交易所价格计算) 2、其他标的：no-不复权 forward-前复权 backward-后复权	no
+baseDate	复权基点	基于复权基点向前或向后复权	1900-01-01 以上市首日为基点向后复权或以最新日期为基点向前复权
+输出：
+
+字段	字段名称	字段描述
+errorcode	错误 ID	代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+errmsg	错误信息	若 errorcode 返回非 0，此处会返回具体的错误信息
+indicators	指标信息	返回所有的指标信息
+datatype	指标格式	返回获取数据的指标格式
+perf	处理时间	返回请求命令整体耗时（ms）
+dataVol	数据量	返回当前命令消耗的数据量
+time	时间	返回数据取值的时间列表
+thscode	标的信息	返回所有标的代码
+data	结构体	返回内容包括 dataframe、json、list、table、array等特定格式的数据内容
+示例：
+
+
+python
+
+matlab
+
+r
+
+vba
+
+csharp
+
+c++
+
+java
+
+http
+python
+THS_HF('300033.SZ','close','CPS:forward1,Fill:Previous,timeformat:LocalTime,startTime:09:30:00,endTime:09:40:00','2025-01-01 09:15:00','2025-01-13 15:15:00')
+该示例代表取同花顺在 2025-01-01 9：30 到 2025-01-13 9:40 期间的 1 分钟数据。
+
+实时行情：THS_RQ 
+python
+THS_RQ(thscode, jsonIndicator, jsonparam)
+获取对应证券品种的最新最近一笔行情数据。支持多代码多指标。
+
+参数：
+
+参数	参数名称	参数类型	参数描述
+thscode	代码	字符串	半角逗号连接的同花顺代码，支持多代码，如：'600004.SH,300330.SZ'
+jsonIndicator	指标	字符串	分号连接的指标名，支持多指标，指标名可以通 过 SuperCommand 客户端直接生成命令
+jsonparam	参数	字符串	冒号分隔赋值的设置项，目前仅债券适用pricetype:1 代表净价，pricetype:2 代表全价，pricetype:3 代表收益率。请求其他品种可不传或者传空字符串
+输出：
+
+字段	字段名称	字段描述
+errorcode	错误 ID	代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+errmsg	错误信息	若 errorcode 返回非 0，此处会返回具体的错误信息
+indicators	指标信息	返回所有的指标信息
+datatype	指标格式	返回获取数据的指标格式
+perf	处理时间	返回请求命令整体耗时（ms）
+dataVol	数据量	返回当前命令消耗的数据量
+time	时间	返回数据取值的时间列表
+thscode	标的信息	返回所有标的代码
+data	结构体	返回内容包括 dataframe、json、list、table、array等特定格式的数据内容
+示例：
+
+
+python
+
+matlab
+
+r
+
+vba
+
+csharp
+
+c++
+
+java
+
+http
+python
+THS_RQ('300033.SZ,600030.SH','open;high;low;latest')
+该示例代表取同花顺和中信证券最新一笔的高开低现价数据。
+
+日内快照：THS_SS 
+python
+THS_SS(thscode, jsonIndicator, jsonparam, begintime, endtime)
+获取对应证券品种的日内和历史的快照和盘口数据。
+
+参数：
+
+参数	参数名称	参数类型	参数描述
+thscode	代码	字符串	半角逗号连接的同花顺代码，支持多代码，如：'600004.SH,300330.SZ'
+jsonIndicator	指标	字符串	分号连接的指标名，支持多指标，指标名可以通过 SuperCommand 客户端直接生成命令
+jsonparam	日内快照输出设置	字符串	单项设置用冒号分隔赋值。当前只支持设置数据类别为原始，即 dataType:Original
+begintime	开始时间	字符串	开始时间，时间格式为 YYYY-MM-DD HH:MM:SS，例如 2019-12-10 09:30:00
+endtime	截止时间	字符串	截止时间，时间格式为 YYYY-MM-DD HH:MM:SS，例如 2019-12-10 10:30:00
+输出：
+
+字段	字段名称	字段描述
+errorcode	错误 ID	代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+errmsg	错误信息	若 errorcode 返回非 0，此处会返回具体的错误信息
+indicators	指标信息	返回所有的指标信息
+datatype	指标格式	返回获取数据的指标格式
+perf	处理时间	返回请求命令整体耗时（ms）
+dataVol	数据量	返回当前命令消耗的数据量
+time	时间	返回数据取值的时间列表
+thscode	标的信息	返回所有标的代码
+data	结构体	返回内容包括 dataframe、json、list、table、array等特定格式的数据内容
+示例：
+
+
+python
+
+matlab
+
+r
+
+vba
+
+csharp
+
+c++
+
+java
+
+http
+python
+THS_SS('300033.SZ','latest','','2025-01-13 09:15:00','2025-01-17 15:15:00')
+返回同花顺在 2025-01-13 的日内现价数据。
+
+EDB 数据：THS_EDB 
+python
+THS_EDB(indicators, param, begintime, endtime)
+获取宏观经济数据，具体包括中国宏观数据、区域宏观数据、全球宏观数据、行业经济数据、经济效益数据、利率走势数据和世界经济数据等。
+
+参数：
+
+参数	参数名称	参数类型	参数描述
+indicators	宏观指标 ID	字符串	分号连接的宏观指标 ID，支持多指标，可以通过 SuperCommand->经济数据库直接生成命令或 SuperCommand->工具->EDB 指标ID 查询里查询指标名拼接该字段
+param	参数	字符串	startrtime-更新起始时间 endrtime-更新结束时间 mode-指标索引
+begintime	开始日期	字符串	时间格式为 YYYY-MM-DD，例如‘2016-05-23’
+endtime	截止日期	字符串	时间格式为 YYYY-MM-DD，例如‘2017-05-23’
+输出：
+
+字段	字段名称	字段描述
+errorcode	错误 ID	代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+errmsg	错误信息	若 errorcode 返回非 0，此处会返回具体的错误信息
+indicators	指标信息	返回所有的指标信息
+datatype	指标格式	返回获取数据的指标格式
+perf	处理时间	返回请求命令整体耗时（ms）
+dataVol	数据量	返回当前命令消耗的数据量
+time	时间	返回数据取值的时间列表
+thscode	标的信息	返回所有标的代码
+data	结构体	返回内容包括 dataframe、json、list、table、array等特定格式的数据内容
+示例：
+
+
+python
+
+matlab
+
+r
+
+vba
+
+csharp
+
+c++
+
+java
+
+http
+python
+THS_EDB('M001620253;M002826938','','2024-01-18','2025-01-18')
+该示例代表取 2024-01-18 到 2025-01-18 期间所有的 GDP：人均、GDP：同比数据。
+
+特色数据
+智能选股：THS_WCQuery 
+python
+THS_WCQuery(query, domain)
+调用问财的接口，通过语义识别进行条件选股。
+
+参数：
+
+参数	参数名称	参数类型	参数描述
+query	搜索内容	字符串	需要在问财中输入的搜索内容
+domain	参数	字符串	可以设置搜索内容的范围
+输出：
+
+字段	字段名称	字段描述
+errorcode	错误 ID	代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+errmsg	错误信息	若 errorcode 返回非 0，此处会返回具体的错误信息
+indicators	指标信息	返回所有的指标信息
+datatype	指标格式	返回获取数据的指标格式
+perf	处理时间	返回请求命令整体耗时（ms）
+dataVol	数据量	返回当前命令消耗的数据量
+time	时间	返回数据取值的时间列表
+thscode	标的信息	返回所有标的代码
+data	结构体	返回内容包括 dataframe、json、list、table、array等特定格式的数据内容
+示例：
+
+
+python
+
+matlab
+
+r
+
+vba
+
+csharp
+
+c++
+
+java
+
+http
+python
+THS_WCQuery('低市盈率','stock')
+获取问财系统认为的 A 股中市盈率低的股票。
+
+公告查询：THS_ReportQuery 
+python
+THS_ReportQuery(thscode, param, output)
+返回所选股票的公告日期、发布时间、证券代码、公告标题、公告链接等公告信息。
+
+参数：
+
+参数	参数名称	参数类型	参数描述
+thscode	代码	字符串	半角逗号连接的同花顺代码，支持多代码，如：'600004.SH,300330.SZ'
+param	输入参数	字符串	半角分号连接的公告查询函数的参数设置，单项设置用冒号分隔赋值。可以设置是否板块提取、设置发布开始截止时间、公告开始截止时间、标题关键词、公告类型等。例如'mode:allAStock;beginrDate:2021-12-09;endrDate:2021-12-09;reportType:901’。各项设置的参数见下方参数设置表
+output	输出参数	字符串	半角逗号连接，用来控制某列是否输出，每项设置为列名和“Y”或“N”通过冒号分隔赋值。如’reportDate:Y,thscode:Y’，其中“Y”表示输出。reportDate-公告日期 thscode-同花顺代码 secName-证券简称 ctime-发布时间 reportTitle-公告标题 pdfURL-公告链接 seq-唯一标号
+参数设置表（param）：
+
+字段	字段名称	字段描述	省略逻辑
+mode	按板块提取还是按代码提取	mode:allAStock 债券 mode:allBond 基金 mode:allFund 港股 mode:allHKStock	缺省时为按代码提取模式
+begincTime	发布开始时间	限定发布开始时间	不限定
+endcTime	发布截止时间	限定发布截止时间	不限定
+beginrDate	公告开始日期	限定公告开始日期	不限定
+endrDate	公告结束日期	限定公告结束日期	不限定
+beginseq	开始 seq	限定开始 seq	不限定
+endseq	截止 seq	限定截止 seq	不限定
+keyword	标题关键词	按标题关键词进行限定	不限定
+reporttype	公告类型	可按业绩报告、IPO 公告、增发公告等，类型过多，推荐使用超级命令生成	不限定
+输出：
+
+字段	字段名称	字段描述
+errorcode	错误 ID	代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+errmsg	错误信息	若 errorcode 返回非 0，此处会返回具体的错误信息
+indicators	指标信息	返回所有的指标信息
+datatype	指标格式	返回获取数据的指标格式
+perf	处理时间	返回请求命令整体耗时（ms）
+dataVol	数据量	返回当前命令消耗的数据量
+time	时间	返回数据取值的时间列表
+thscode	标的信息	返回所有标的代码
+data	结构体	返回内容包括 dataframe、json、list、table、array等特定格式的数据内容
+示例：
+
+
+python
+
+matlab
+
+r
+
+vba
+
+csharp
+
+c++
+
+java
+
+http
+python
+THS_ReportQuery('300033.SZ','beginrDate:2024-01-18;endrDate:2025-01-18;reportType:901','reportDate:Y,thscode:Y,secName:Y,ctime:Y,reportTitle:Y,pdfURL:Y,seq:Y')
+形态预测：THS_Special_ShapePredict 
+python
+THS_Special_ShapePredict(thscode, param, begintime, endtime)
+根据用户所需要的证券代码和参数返回与用户所选股票有着高匹配度的股票。
+
+参数：
+
+参数	参数名称	参数类型	参数描述
+thscode	搜索内容	字符串	半角逗号连接的同花顺代码，支持多代码，如：'600004.SH,300330.SZ'
+param	参数	字符串	半角逗号连接的输出设置，单项设置用冒号分隔赋值。可以设置匹配的市场范围，匹配度，匹配周期与预测周期等。各项设置的参数见参数对应表
+begintime	开始日期	字符串	时间格式为 YYYY-MM-DD，例如‘2016-05-23’
+endtime	截止日期	字符串	时间格式为 YYYY-MM-DD，例如‘2016-05-23’
+输出：
+
+字段	字段名称	字段描述
+errorcode	错误 ID	代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+errmsg	错误信息	若 errorcode 返回非 0，此处会返回具体的错误信息
+tables	结构体	返回内容包括 ID、time 等
+datatype	指标格式	返回获取数据的指标格式
+inputParams	输入参数	返回输入的参数
+perf	处理时间	返回请求命令整体耗时（ms）
+dataVol	数据量	返回当前命令消耗的数据量
+示例：
+
+python
+THS_Special_ShapePredict('600000.SH','range=SHSE_A_stock;SZSE_A_stock;SHSE_B_stock,match_level=90.0,match_period=20,predict_period=35','2019-07-19','2019-12-01')
+在上证 A 股、深圳 A 股、上证 B 股中寻找与 600000.SH 形态相似的股票，用来预测的起始日期和截止日期分别为 2019-07-19 与 2019-12-01。筛选条件为匹配度 90 及以上，匹配周期为 20，预测周期为 35。
+
+期股联动：THS_Special_StockLink 
+python
+THS_Special_StockLink(thscode, param)
+通过期货的商品名称，获得所有与该种商品相关的股票相关信息。
+
+参数：
+
+参数	参数名称	参数类型	参数描述
+thscode	期货品种	字符串	期货品种的中文名称
+param	参数	字符串	分号连接的指标参数
+输出：
+
+字段	字段名称	字段描述
+errorcode	错误 ID	代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+errmsg	错误信息	若 errorcode 返回非 0，此处会返回具体的错误信息
+tables	结构体	返回内容包括 ID、time 等
+datatype	指标格式	返回获取数据的指标格式
+inputParams	输入参数	返回输入的参数
+perf	处理时间	返回请求命令整体耗时（ms）
+dataVol	数据量	返回当前命令消耗的数据量
+示例：
+
+python
+THS_Special_StockLink('商品焦炭','thscode;thsname')
+返回商品焦炭所对应的同花顺代码以及股票简称。
+
+基金实时估值：THS_realTimeValuation 
+python
+THS_realTimeValuation(thscode, param, output)
+返回指定基金的最新实时估值数据或者当日所有的所有实时估值数据。
+
+参数：
+
+参数	参数名称	参数类型	参数描述
+thscode	基金品种	字符串	请求最新估值时不限数量。请求当日所有分钟的历史估值时，基金数量不能超过 500
+param	输入参数	字符串	分号连接的指标参数，如 'onlyLastest:0;beginTime:2020-08-10 09:15:00;endTime:2020-08-10 15:15:00'
+output	输出设置	字符串	半角逗号连接，用来控制某列是否输出，每项设置为列名和“Y”或 “N” 通过冒号分隔赋值。如 'changeRatioValuation:Y,realTimeValuation:Y,Deviation30TDays:Y'，其中“Y”表示输出。
+输出：
+
+字段	字段名称	字段描述
+errorcode	错误 ID	代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+errmsg	错误信息	若 errorcode 返回非 0，此处会返回具体的错误信息
+indicators	指标信息	返回所有的指标信息
+datatype	指标格式	返回获取数据的指标格式
+perf	处理时间	返回请求命令整体耗时（ms）
+dataVol	数据量	返回当前命令消耗的数据量
+time	时间	返回数据取值的时间列表
+thscode	标的信息	返回所有标的代码
+data	结构体	返回内容包括 dataframe、json、list、table、array等特定格式的数据内容
+
+python
+
+matlab
+
+r
+
+vba
+
+csharp
+
+c++
+
+java
+
+http
+python
+THS_realTimeValuation('512880.SH','onlyLastest:0;beginTime:2024-12-06 09:15:00;endTime:2024-12-06 15:15:00','realTimeValuation:Y')
+获取512880.SH（证券ETF）2024-12-06当天的基金实时估值。
+
+功能函数
+数据量统计：THS_DataStatistics 
+python
+THS_DataStatistics()
+数据量统计函数不需要输入参数，在接口语言环境中直接使用 THS_DataStatistics()函数可以直接查询 到相应的数据量使用统计值。
+
+输出：
+
+字段	字段名称	字段描述
+错误 ID	errorcode	返回代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+错误信息	errmsg	若 errorcode 返回非 0，此处会返回具体的错误信息
+结构体	tables	返回内容包括 thscode、time、table（具体的数据内容）等
+指标格式	datatype	返回获取数据的指标格式
+输入参数	inputParams	返回输入的参数
+处理时间	perf	返回请求命令整体耗时（ms）
+数据量	dataVol	返回当前命令消耗的数据量
+示例：
+
+python
+THS_DataStatistics()
+获取本账号高频数据、基础数据及 EDB 数据数据量使用统计值。
+
+日期查询：THS_DateQuery 
+python
+THS_DateQuery(exchange, parameters, startDate, endDate)
+该命令用来根据输入的开始日期和结束日期获取交易所的交易日历的函数。
+
+参数：
+
+参数	描述
+exchange	交易所英文简称，只能是单个输入。例如'SSE'。
+parameters	参数，可以是默认参数也可以根据说明对参数进行自定义赋值，参数和参数之间用逗号(‘，’)隔开，参数的赋值用冒号(‘:’)。例如 'dateType:0,period:D,dateFormat:0'。
+startDate	开始时间，时间格式为 YYYY-MM-DD，例如 2015-06-23。
+endDate	截止时间，时间格式为 YYYY-MM-DD，例如 2016-06-23。
+参数说明：（parameters）
+
+交易所（必填）：			
+参数	参数值	参数类型	参数描述
+exchange	SSE	字符串	上交所
+exchange	SZSE	字符串	深交所
+exchange	HKEX	字符串	港交所
+exchange	YJZHQ	字符串	银行间债券市场
+exchange	NYSEARCA	字符串	NYSE Arca
+exchange	NASDAQ	字符串	美国 NASDAQ 证券交易所
+exchange	NYSE	字符串	美国纽约证券交易所
+exchange	AMEX	字符串	美国证券交易所
+exchange	CZCE	字符串	郑州商品交易所
+exchange	SHFE	字符串	上海期货交易所
+exchange	DCE	字符串	大连商品交易所
+exchange	BMD	字符串	马来西亚衍生品交易所
+exchange	NYBOT	字符串	纽约期货交易所
+exchange	COMEX	字符串	纽约商品交易所
+exchange	NYMEX	字符串	纽约商品期货交易所
+exchange	CBOT	字符串	芝加哥商品交易所
+exchange	ICE	字符串	洲际交易所
+python
+范例："SSE"
+日期类型（选填）：			
+参数	参数值	参数类型	参数描述
+dateType	0	整形	交易日
+dateType	1	整形	日历日
+python
+范例："dateType:0"，默认dateType: 0
+时间周期（选填）：			
+参数	参数值	参数类型	参数描述
+period	D	字符串	日
+period	W	字符串	周
+period	M	字符串	月
+period	Q	字符串	季
+period	S	字符串	半年
+period	Y	字符串	年
+python
+范例："period:D"，默认period: D
+日期输出格式（选填）：			
+参数	参数值	参数类型	参数描述
+dateFormat	0	整形	YYYY-MM-DD
+dateFormat	1	整形	YYYY/MM/DD
+dateFormat	2	整形	YYYYMMDD
+python
+范例："dateFormat:0"，默认dateFormat: 0
+起始日期（必填）：			
+参数	参数值	参数类型	参数描述
+StartDate	\	字符串	日期序列的起始日期
+python
+范例：'2024-12-01'
+截止日期（必填）：			
+参数	参数值	参数类型	参数描述
+EndDate	\	字符串	日期序列的截止日期，若为空默认为系统当前日期
+python
+范例：'2024-12-06'
+输出：
+
+字段	字段名	字段描述
+错误 ID	errorcode	返回代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+错误信息	errmsg	若 errorcode 返回非 0，此处会返回具体的错误信息
+结构体	tables	返回内容包括 thscode、time、table（具体的数据内容）等
+指标格式	datatype	返回获取数据的指标格式
+输入参数	inputParams	返回输入的参数
+处理时间	perf	返回请求命令整体耗时（ms）
+数据量	dataVol	返回当前命令消耗的数据量
+示例：
+
+python
+THS_DateQuery('SSE','dateType:0,period:D,dateFormat:0','2019-06-01','2019-06-06')
+日期偏移：THS_DateOffset 
+python
+THS_DateOffset(exchange, parameters, startDate, endDate)
+该命令用来根据输入的日期和偏移量获取相应设定的参数的日期的函数。
+
+参数：
+
+参数	描述
+exchange	交易所英文简称，只能是单个输入。例如'SSE'。
+parameters	参数，可以是默认参数也可以根据说明对参数进行自定义赋值，参数和参数之间用逗号(‘，’)隔开，参数的赋值用冒号(‘:’)。例如 'dateType:0,period:D,dateFormat:0'。
+startDate	开始时间，时间格式为 YYYY-MM-DD，例如 2015-06-23。
+endDate	截止时间，时间格式为 YYYY-MM-DD，例如 2016-06-23。
+参数说明：（parameters）
+
+交易所（必填）：			
+参数	参数值	参数类型	参数描述
+exchange	SSE	字符串	上交所
+exchange	SZSE	字符串	深交所
+exchange	HKEX	字符串	港交所
+exchange	YJZHQ	字符串	银行间债券市场
+exchange	NYSEARCA	字符串	NYSE Arca
+exchange	NASDAQ	字符串	美国 NASDAQ 证券交易所
+exchange	NYSE	字符串	美国纽约证券交易所
+exchange	AMEX	字符串	美国证券交易所
+exchange	CZCE	字符串	郑州商品交易所
+exchange	SHFE	字符串	上海期货交易所
+exchange	DCE	字符串	大连商品交易所
+exchange	BMD	字符串	马来西亚衍生品交易所
+exchange	NYBOT	字符串	纽约期货交易所
+exchange	COMEX	字符串	纽约商品交易所
+exchange	NYMEX	字符串	纽约商品期货交易所
+exchange	CBOT	字符串	芝加哥商品交易所
+exchange	ICE	字符串	洲际交易所
+python
+范例："SSE"
+日期类型（选填）：			
+参数	参数值	参数类型	参数描述
+dateType	0	整形	交易日
+dateType	1	整形	日历日
+python
+范例："dateType:0"，默认dateType: 0
+偏移量（选填）：			
+参数	参数值	参数类型	参数描述
+offset	\	整形	输入的值就是偏移天数，正数为向前偏移，负数为后偏移
+python
+范例："offset:1"，默认offset: 1
+时间周期（选填）：			
+参数	参数值	参数类型	参数描述
+period	D	字符串	日
+period	W	字符串	周
+period	M	字符串	月
+period	Q	字符串	季
+period	S	字符串	半年
+period	Y	字符串	年
+python
+范例："period:D"，默认period: D
+日期输出格式（选填）：			
+参数	参数值	参数类型	参数描述
+dateFormat	0	整形	YYYY-MM-DD
+dateFormat	1	整形	YYYY/MM/DD
+dateFormat	2	整形	YYYYMMDD
+python
+范例："dateFormat:0"，默认dateFormat: 0
+参考日期（必填）：			
+参数	参数值	参数类型	参数描述
+sdate	\	字符串	参考日期，默认系统当前日期
+python
+范例："2019-01-01"
+输出：
+
+字段	字段名	字段描述
+错误 ID	errorcode	返回代码运行错误码，errorcode=0 表示代码运行正常。若为其他则需查找错误原因
+错误信息	errmsg	若 errorcode 返回非 0，此处会返回具体的错误信息
+结构体	tables	返回内容包括 thscode、time、table（具体的数据内容）等
+指标格式	datatype	返回获取数据的指标格式
+输入参数	inputParams	返回输入的参数
+处理时间	perf	返回请求命令整体耗时（ms）
+数据量	dataVol	返回当前命令消耗的数据量
+示例：
+
+python
+THS_DateOffset('SSE','dateType:0,period:D,offset:-5,dateFormat:0','2019-06-06')
+获取上交所 2019 年 6 月 6 日前推 5 日的所有交易日日期序列。

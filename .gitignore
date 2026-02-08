@@ -1,2 +1,5 @@
 # 同花顺数据接口（Windows 版）——忽略整个目录
 THSDataInterface_Windows/
+
+# 本机接口路径配置（不提交，每台电脑自己维护）
+.ifind_path
